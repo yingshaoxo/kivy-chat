@@ -28,6 +28,7 @@ Builder.load_string("""
 
 <Label>:
     font_size: 25
+    font_name:'droid.ttf'
 
 <Button>:
     font_size: 30
@@ -41,6 +42,7 @@ Builder.load_string("""
     font_size: 30
     multiline: False
     padding: [10, 0.5 * (self.height - self.line_height)]
+    font_name:'droid.ttf'
 
 <ScrollView>:
     canvas.before:
@@ -99,11 +101,6 @@ Builder.load_string("""
         BoxLayout:
             orientation: 'vertical'
 
-            ScrollView:
-                ChatLabel:
-                    id: chat_logs
-                    text: ''
-
             BoxLayout:
                 height: 90
                 orientation: 'horizontal'
@@ -118,6 +115,11 @@ Builder.load_string("""
                     text: 'Send'
                     on_press: app.send_msg()
                     size_hint: (0.3, 1)
+
+            ScrollView:
+                ChatLabel:
+                    id: chat_logs
+                    text: ''
 """)
 #45.63.90.169
 
@@ -152,7 +154,7 @@ class ClientProtocol(asyncio.Protocol):
                 else:
                     msg += i
             self.app.root.ids.chat_logs.text += (
-            '\t[b][color=2980b9]{}:[/color][/b] {}\n'.format(nickname, esc_markup(msg))
+            '  [b][color=2980b9]{}:[/color][/b] {}\n'.format(nickname, esc_markup(msg))
             )
 
     def connection_lost(self, exc):
@@ -237,7 +239,7 @@ class ChatApp(App):
         msg = self.root.ids.message.text
         self.transport.write('{0}:{1}'.format(self.nick, msg).encode('utf-8', 'ignore'))
         self.root.ids.chat_logs.text += (
-            '\t[b][color=2980b9]{}:[/color][/b] {}\n'
+            '  [b][color=2980b9]{}:[/color][/b] {}\n'
                 .format(self.nick, esc_markup(msg)))
         self.root.ids.message.text = ''
 
