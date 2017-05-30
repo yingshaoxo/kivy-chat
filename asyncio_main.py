@@ -1,5 +1,4 @@
 import asyncio
-import time
 from datetime import datetime
 
 from kivy.app import App
@@ -8,6 +7,9 @@ from kivy.config import Config
 from kivy.uix.screenmanager import ScreenManager
 
 from kivy.clock import Clock
+
+import os
+import json
 
 Builder.load_string("""
 #:import C kivy.utils.get_color_from_hex
@@ -71,19 +73,21 @@ Builder.load_string("""
             GridLayout:
                 Label:
                     text: 'Server:'
+                    halign: 'left'
                     size_hint: (0.4, 1)
 
                 TextInput:
                     id: server
-                    text: '192.168.1.103'
+                    text: app.host
 
                 Label:
                     text: 'Nickname:'
+                    halign: 'left'
                     size_hint: (0.4, 1)
 
                 TextInput:
                     id: nickname
-                    text: 'Kivy'
+                    text: app.nick
 
             Button:
                 text: 'Connect'
@@ -129,7 +133,7 @@ class ClientProtocol(asyncio.Protocol):
         self.loop = loop
 
     def connection_made(self, transport):
-        pass
+        self.transport = transport
 
     def data_received(self, data):
         if data:
@@ -154,7 +158,6 @@ class ClientProtocol(asyncio.Protocol):
     def connection_lost(self, exc):
         print('The server closed the connection')
         self.transport.close()
-        self.reconnect()
 
 
 class RootWidget(ScreenManager):
@@ -165,14 +168,33 @@ class RootWidget(ScreenManager):
 class ChatApp(App):
 
     def build(self):
+        self.base_folder =os.path.dirname(os.path.abspath('.'))
+        self.setting_file = os.path.join(self.base_folder, 'chat_setting.json')
+        self.read_config() 
         return RootWidget()
-    
+
+    def read_config(self):
+        try:
+            with open(self.setting_file, 'r') as f:
+                text = f.read()
+            self.setting_dict = json.loads(text)
+
+            self.host = self.setting_dict['host']
+            self.nick = self.setting_dict['nick']
+        except:
+            self.host = "127.0.0.1"
+            self.nick = "kivy"
+
+    def save_config(self):
+        self.setting_dict = {'host': self.host, 'nick': self.nick}
+        with open(self.setting_file, 'w') as f:
+            f.write(json.dumps(self.setting_dict))
+
     def connect(self):
         self.host = self.root.ids.server.text
         self.nick = self.root.ids.nickname.text
 
         self.is_stop = False
-
         self.loop = asyncio.get_event_loop()
 
         if self.reconnect():
@@ -181,7 +203,7 @@ class ChatApp(App):
             self.clock_detect = Clock.schedule_interval(self.detect_if_offline, 3)
 
             self.root.current = 'chatroom'
-
+            self.save_config()
             print('-- connecting to ' + self.host)
 
     def reconnect(self):
@@ -191,23 +213,27 @@ class ChatApp(App):
             self.transport, self.protocol = self.loop.run_until_complete(self.coro)
 
             self.last_connection_time = datetime.now()
-        except:
+            print("I just reconnected the server.")
+            return True
+        except Exception as e:
+            #print(e)
             self.root.current = 'login'
             try:
                 self.clock_receive.cancel()
                 self.clock_detect.cancel()
             except:
                 print("No server available.")
-                return False
-        return True
+            return False
 
-    def detect_if_offline(self, dt): #run after 3 seconds
+    def detect_if_offline(self, dt): #run every 3 seconds
         if (datetime.now() - self.last_connection_time).total_seconds() > 45:
             self.transport.close()
             self.reconnect()
-            print("I just reconnected the server.")
 
     def send_msg(self):
+        if self.transport.is_closing():
+            self.transport.close()
+            self.reconnect()
         msg = self.root.ids.message.text
         self.transport.write('{0}:{1}'.format(self.nick, msg).encode('utf-8', 'ignore'))
         self.root.ids.chat_logs.text += (
@@ -219,7 +245,6 @@ class ChatApp(App):
         self.loop.run_until_complete(self.coro)
 
     def on_stop(self):
-        self.loop.close()
         exit()
 
 
