@@ -1,7 +1,3 @@
-import socket
-import asyncore
-import threading
-
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.config import Config
@@ -24,6 +20,7 @@ Builder.load_string("""
 
 <Label>:
     font_size: 25
+    font_name:'data/droid.ttf'
 
 <Button>:
     font_size: 30
@@ -37,6 +34,7 @@ Builder.load_string("""
     font_size: 30
     multiline: False
     padding: [10, 0.5 * (self.height - self.line_height)]
+    font_name:'data/droid.ttf'
 
 <ScrollView>:
     canvas.before:
@@ -66,43 +64,52 @@ Builder.load_string("""
         BoxLayout:
             orientation: 'vertical'
 
-            GridLayout:
-                Label:
-                    text: 'Server:'
-                    size_hint: (0.4, 1)
+            canvas.before:
+                Color:
+                    rgba: 1, 1, 1, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+                    source: "data/background.png"
+
+            FloatLayout:
+                canvas:
+                    Color:
+                        rgb: 1, 1, 1
+                    Ellipse:
+                        id: user_picture
+                        pos: root.width/2 - 150/2, self.height/2 - 150/2 + 150*1.5
+                        size: 150, 150
+                        source: 'data/yingshaoxo.png'
+                        angle_start: 0
+                        angle_end: 360
+                    Line:
+                        width: 2
+                        ellipse: (root.width/2 - 158/2, self.height/2 - 158/2 + 150*1.5, 158, 158, 0, 360)
 
                 TextInput:
                     id: server
-                    text: '127.0.0.1'
-
-                Label:
-                    text: 'Nickname:'
-                    size_hint: (0.4, 1)
+                    hint_text: "Server IP"
+                    size_hint: (3.9/6.8, 1/12)
+                    pos_hint: {'center_x': 0.5, 'y': 0.47}
 
                 TextInput:
                     id: nickname
-                    text: 'Kivy'
+                    hint_text: "Nickname"
+                    size_hint: (3.9/6.8, 1/12)
+                    pos_hint: {'center_x': 0.5, 'y': 0.37}
 
-            Button:
-                text: 'Connect'
-                on_press: app.connect()
+                Button:
+                    text: 'Connect'
+                    on_press: app.connect()
+                    size_hint: (4/6.8, 1/12)
+                    pos_hint: {'center_x': 0.5, 'y': 0.22}
 
     Screen:
         name: 'chatroom'
 
         BoxLayout:
             orientation: 'vertical'
-
-            Button:
-                text: 'Disconnect'
-                on_press: app.disconnect()
-                background_normal: 'data/red_button_normal.png'
-                background_down: 'data/red_button_down.png'
-
-            ScrollView:
-                ChatLabel:
-                    id: chat_logs
-                    text: ''
 
             BoxLayout:
                 height: 90
@@ -118,6 +125,11 @@ Builder.load_string("""
                     text: 'Send'
                     on_press: app.send_msg()
                     size_hint: (0.3, 1)
+
+            ScrollView:
+                ChatLabel:
+                    id: chat_logs
+                    text: ''
 """)
 
 
@@ -125,31 +137,6 @@ def esc_markup(msg):
     return (msg.replace('&', '&amp;')
             .replace('[', '&bl;')
             .replace(']', '&br;'))
-
-
-class MySocketClient(asyncore.dispatcher):
-    
-    def __init__(self, server_address, app):
-        asyncore.dispatcher.__init__(self)
-        self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.connect(server_address)
-        self.app = app
-
-    def handle_read(self):
-        data = self.recv(8192)
-        if data:
-            text = data.decode('utf-8', 'ignore')
-            nickname = ''
-            msg = ''
-            for num, i in enumerate(text.split(':'), start=0):
-                if num == 0:
-                    nickname = i
-                else:
-                    msg += i
-            self.app.root.ids.chat_logs.text += (
-            '\t[b][color=2980b9]{}:[/color][/b] {}\n'.format(nickname, esc_markup(msg))
-            )
-
 
 class RootWidget(ScreenManager):
     def __init__(self, **kwargs):
@@ -160,35 +147,20 @@ class ChatApp(App):
 
     def build(self):
         return RootWidget()
-    
+
     def connect(self):
-        host = self.root.ids.server.text
+        self.host = self.root.ids.server.text
         self.nick = self.root.ids.nickname.text
-
-        self.client = MySocketClient((host, 5920), self)
-        threading.Thread(target=asyncore.loop).start()
-        
-        print('-- connecting to ' + host)
-
         self.root.current = 'chatroom'
-
-    def disconnect(self):
-        self.client.close()
-        print('-- disconnecting')
-        
-        self.root.current = 'login'
-        self.root.ids.chat_logs.text = ''
 
     def send_msg(self):
         msg = self.root.ids.message.text
-        self.client.send('{0}:{1}'.format(self.nick, msg).encode('utf-8', 'ignore'))
         self.root.ids.chat_logs.text += (
-            '\t[b][color=2980b9]{}:[/color][/b] {}\n'
+            '  [b][color=2980b9]{}:[/color][/b] {}\n'
                 .format(self.nick, esc_markup(msg)))
         self.root.ids.message.text = ''
 
     def on_stop(self):
-        asyncore.close()
         exit()
 
 
