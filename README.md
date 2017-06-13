@@ -8,6 +8,8 @@ For testing, run the server first, then you can run main.py:
 
 `python3 asyncio_main.py`
 
-![alt text](https://github.com/yingshaoxo/kivy-chat/raw/master/Show/start.png "start")
+![start](https://github.com/yingshaoxo/kivy-chat/raw/master/Show/start.png "start")
 
-![alt text](https://github.com/yingshaoxo/kivy-chat/raw/master/Show/chat.png "chat")
+![chat](https://github.com/yingshaoxo/kivy-chat/raw/master/Show/chat.png "chat")
+
+![TIM](https://github.com/yingshaoxo/kivy-chat/raw/master/Show/TIM.png "TIM")

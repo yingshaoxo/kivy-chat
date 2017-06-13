@@ -100,6 +100,8 @@ Builder.load_string("""
                     hint_text: "Server IP"
                     size_hint: (3.9/6.8, 1/12)
                     pos_hint: {'center_x': 0.5, 'y': 0.47}
+                    background_normal: 'data/input_line.png'
+                    background_active: 'data/white.png'
                     text: app.host
 
                 TextInput:
@@ -107,6 +109,8 @@ Builder.load_string("""
                     hint_text: "Nickname"
                     size_hint: (3.9/6.8, 1/12)
                     pos_hint: {'center_x': 0.5, 'y': 0.37}
+                    background_normal: 'data/input_line.png'
+                    background_active: 'data/white.png'
                     text: app.nick
 
                 Button:
