@@ -51,7 +51,7 @@ Builder.load_string("""
     text_size: (self.width, None)
     halign: 'left'
     valign: 'top'
-    padding: (-10, 0)  # fixed in Kivy 1.8.1
+    padding: (0, 0)  # fixed in Kivy 1.8.1
     size_hint: (1, None)
     height: self.texture_size[1]
     markup: True
@@ -147,7 +147,7 @@ class MySocketClient(asyncore.dispatcher):
                 else:
                     msg += i
             self.app.root.ids.chat_logs.text += (
-            '\t[b][color=2980b9]{}:[/color][/b] {}\n'.format(nickname, esc_markup(msg))
+            '[b][color=2980b9]{}:[/color][/b] {}\n'.format(nickname, esc_markup(msg))
             )
 
 
@@ -183,7 +183,7 @@ class ChatApp(App):
         msg = self.root.ids.message.text
         self.client.send('{0}:{1}'.format(self.nick, msg).encode('utf-8', 'ignore'))
         self.root.ids.chat_logs.text += (
-            '\t[b][color=2980b9]{}:[/color][/b] {}\n'
+            '[b][color=2980b9]{}:[/color][/b] {}\n'
                 .format(self.nick, esc_markup(msg)))
         self.root.ids.message.text = ''
 
