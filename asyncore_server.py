@@ -1,7 +1,9 @@
 import socket
 import asyncore
 
+
 connected_sockets = dict()
+
 
 class SocketHandler(asyncore.dispatcher_with_send):
 
@@ -18,6 +20,7 @@ class SocketHandler(asyncore.dispatcher_with_send):
         del connected_sockets[self.addr]
         self.close()
 
+
 class SocketServer(asyncore.dispatcher):
 
     def __init__(self, host, port):
@@ -31,6 +34,7 @@ class SocketServer(asyncore.dispatcher):
         #print('Incoming connection from %s' % repr(addr))
         connected_sockets.update({addr: sock})
         handler = SocketHandler(sock)
+
 
 socket_server = SocketServer('0.0.0.0', 5920)
 

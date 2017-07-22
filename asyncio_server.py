@@ -2,6 +2,7 @@ import asyncio
 import threading
 import time
 
+
 connected_transport = dict()
 
 
@@ -36,6 +37,7 @@ def are_you_ok():
 
 
 loop = asyncio.get_event_loop()
+
 # Each client connection will create a new protocol instance
 coro = loop.create_server(ServerClientProtocol, '0.0.0.0', 5920)
 server = loop.run_until_complete(coro)
@@ -47,7 +49,6 @@ try:
     loop.run_forever()
 except KeyboardInterrupt:
     pass
-
 
 # Close the server
 server.close()

@@ -1,5 +1,5 @@
 # Kivy-Chat
-Chat application made it with Kivy. Supports both Python2(asyncore) and Python3(asyncio).
+Chat application based on kivy. Supports both Python2(asyncore) and Python3(asyncio).
 
 
 For testing, run the server first, then you can run main.py:
