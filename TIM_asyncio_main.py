@@ -11,6 +11,10 @@ from kivy.clock import Clock
 import os
 import json
 
+
+PORT = 5920
+
+
 Builder.load_string("""
 #:import C kivy.utils.get_color_from_hex
 #:import RiseInTransition kivy.uix.screenmanager.RiseInTransition
@@ -235,7 +239,7 @@ class ChatApp(App):
     def reconnect(self):
         try:
             self.coro = self.loop.create_connection(lambda: ClientProtocol(self, self.loop),
-                          self.host, 5920)
+                          self.host, PORT)
             self.transport, self.protocol = self.loop.run_until_complete(self.coro)
 
             self.last_connection_time = datetime.now()

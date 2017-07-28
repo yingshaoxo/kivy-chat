@@ -7,6 +7,10 @@ from kivy.lang import Builder
 from kivy.config import Config
 from kivy.uix.screenmanager import ScreenManager
 
+
+PORT = 5920
+
+
 Builder.load_string("""
 #:import C kivy.utils.get_color_from_hex
 #:import RiseInTransition kivy.uix.screenmanager.RiseInTransition
@@ -165,7 +169,7 @@ class ChatApp(App):
         host = self.root.ids.server.text
         self.nick = self.root.ids.nickname.text
 
-        self.client = MySocketClient((host, 5920), self)
+        self.client = MySocketClient((host, PORT), self)
         threading.Thread(target=asyncore.loop).start()
         
         print('-- connecting to ' + host)

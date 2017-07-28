@@ -36,6 +36,6 @@ class SocketServer(asyncore.dispatcher):
         handler = SocketHandler(sock)
 
 
-socket_server = SocketServer('0.0.0.0', 5920)
+socket_server = SocketServer('0.0.0.0', 5920) # Here you can change the address and the port
 
 asyncore.loop()

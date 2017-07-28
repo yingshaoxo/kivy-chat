@@ -39,7 +39,7 @@ def are_you_ok():
 loop = asyncio.get_event_loop()
 
 # Each client connection will create a new protocol instance
-coro = loop.create_server(ServerClientProtocol, '0.0.0.0', 5920)
+coro = loop.create_server(ServerClientProtocol, '0.0.0.0', 5920) # Here you can change the address and the port
 server = loop.run_until_complete(coro)
 
 # Serve requests until Ctrl+C is pressed

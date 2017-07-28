@@ -5,7 +5,7 @@ import time
 from datetime import datetime
 
 
-SERVER_ADDRESS = '45.63.90.169' # VPS address
+SERVER_ADDRESS = '127.0.0.1' # VPS address
 PORT = 5920
 
 
