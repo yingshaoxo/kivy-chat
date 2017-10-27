@@ -7,6 +7,7 @@ from kivy.config import Config
 from kivy.uix.screenmanager import ScreenManager
 
 from kivy.clock import Clock
+from kivy.core.clipboard import Clipboard
 
 import os
 import json
@@ -155,11 +156,16 @@ class ClientProtocol(asyncio.Protocol):
             for num, i in enumerate(text.split(':'), start=0):
                 if num == 0:
                     nickname = i
-                else:
+                elif num == 1:
                     msg += i
+                else:
+                    msg += ':' + i
+
             self.app.root.ids.chat_logs.text += (
             '[b][color=2980b9]{}:[/color][/b] {}\n'.format(nickname, esc_markup(msg))
             )
+
+            Clipboard.copy(msg)
 
     def connection_lost(self, exc):
         print('The server closed the connection')
@@ -255,7 +261,4 @@ class ChatApp(App):
 
 
 if __name__ == '__main__':
-    Config.set('graphics', 'width', '600')
-    Config.set('graphics', 'height', '900')
-
     ChatApp().run()

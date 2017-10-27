@@ -1,3 +1,4 @@
+import os
 import socket
 import asyncore
 import threading
@@ -6,6 +7,8 @@ from kivy.app import App
 from kivy.lang import Builder
 from kivy.config import Config
 from kivy.uix.screenmanager import ScreenManager
+
+from kivy.core.clipboard import Clipboard
 
 
 PORT = 5920
@@ -77,7 +80,7 @@ Builder.load_string("""
 
                 TextInput:
                     id: server
-                    text: '127.0.0.1'
+                    text: app.host
 
                 Label:
                     text: 'Nickname:'
@@ -85,7 +88,7 @@ Builder.load_string("""
 
                 TextInput:
                     id: nickname
-                    text: 'Kivy'
+                    text: app.nick
 
             Button:
                 text: 'Connect'
@@ -143,16 +146,26 @@ class MySocketClient(asyncore.dispatcher):
         data = self.recv(8192)
         if data:
             text = data.decode('utf-8', 'ignore')
+
+            if text == "*1*":
+                return 
+
             nickname = ''
             msg = ''
             for num, i in enumerate(text.split(':'), start=0):
                 if num == 0:
                     nickname = i
-                else:
+                elif num == 1:
                     msg += i
+                else:
+                    msg += ':' + i
+
             self.app.root.ids.chat_logs.text += (
             '[b][color=2980b9]{}:[/color][/b] {}\n'.format(nickname, esc_markup(msg))
             )
+
+            Clipboard.copy(msg)
+
 
 
 class RootWidget(ScreenManager):
@@ -163,16 +176,36 @@ class RootWidget(ScreenManager):
 class ChatApp(App):
 
     def build(self):
+        self.base_folder =os.path.dirname(os.path.abspath('.'))
+        self.setting_file = os.path.join(self.base_folder, 'chat_setting.json')
+        self.read_config()
         return RootWidget()
     
+    def read_config(self):
+        try:
+            with open(self.setting_file, 'r') as f:
+                text = f.read()
+            self.setting_dict = json.loads(text)
+
+            self.host = self.setting_dict['host']
+            self.nick = self.setting_dict['nick']
+        except:
+            self.host = "127.0.0.1"
+            self.nick = "kivy"
+
+    def save_config(self):
+        self.setting_dict = {'host': self.host, 'nick': self.nick}
+        with open(self.setting_file, 'w') as f:
+            f.write(json.dumps(self.setting_dict))
+
     def connect(self):
-        host = self.root.ids.server.text
+        self.host = self.root.ids.server.text
         self.nick = self.root.ids.nickname.text
 
-        self.client = MySocketClient((host, PORT), self)
+        self.client = MySocketClient((self.host, PORT), self)
         threading.Thread(target=asyncore.loop).start()
         
-        print('-- connecting to ' + host)
+        print('-- connecting to ' + self.host)
 
         self.root.current = 'chatroom'
 
@@ -192,12 +225,8 @@ class ChatApp(App):
         self.root.ids.message.text = ''
 
     def on_stop(self):
-        asyncore.close()
         exit()
 
 
 if __name__ == '__main__':
-    Config.set('graphics', 'width', '600')
-    Config.set('graphics', 'height', '900')
-
     ChatApp().run()

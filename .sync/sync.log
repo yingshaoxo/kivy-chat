@@ -1,0 +1,36 @@
+﻿platform: Linux 4.10.0-19-generic #21-Ubuntu SMP Thu Apr 6 17:04:57 UTC 2017 x86_64
+version: 2.4.4.732
+[20171028 02:24:39.678] ZIP: Can't locate [version] in zip, error -100.
+[20171028 02:24:39.701] Directory root is ""
+[20171028 02:24:39.714] test sha1: AE5BD8EFEA5322C4D9986D06680A781392F9A642
+[20171028 02:24:39.714] test sha2: 630DCD2966C4336691125448BBB25B4FF412A49C732DB2C8ABC1B8581BD710DD
+[20171028 02:24:39.738] test aes: 0A940BB5416EF045F1C39458C653EA5A07FEEF74E1D5036E900EEE118E949293
+[20171028 02:24:39.738] diskio_controller created
+[20171028 02:24:39.745] register diskio completion queue with id 1
+[20171028 02:24:39.754] PLC[0x000000000251f770] binding on 0.0.0.0:30195
+[20171028 02:24:39.754] D! Socket::listen[0x000000000251f770][7] bound listening socket 7 to IP 0.0.0.0:30195
+[20171028 02:24:39.754] UDP: bound listening socket 8 to IP 0.0.0.0:30195
+[20171028 02:24:39.754] D! Socket::listen[0x000000000252d640][9] bound listening socket 9 to IP 0.0.0.0:7654
+[20171028 02:24:39.757] register diskio completion queue with id 2
+[20171028 02:24:39.758] Unsupported or empty sync.dat file
+[20171028 02:24:39.758] My PeerID: 10A52DF4B2713315BBE2B22078E58841A67B0C1F
+[20171028 02:24:39.758] LC: LoadLicenses: there is no pro license
+[20171028 02:24:39.758] setup socket 17 for local peer discovery for 127.0.0.1: success
+[20171028 02:24:39.759] setup socket 18 for local peer discovery for 192.168.1.238: success
+[20171028 02:24:39.770] Scheduler: Apply global rule, download limit: -1, upload limit: -1
+[20171028 02:24:39.771] CoreState: Total memory: 1539993600, used by Sync: 5464064, percentage used: 0.35
+[20171028 02:24:39.771] message thread start
+[20171028 02:24:40.771] Debug log mask has been set to FFFFFFFF
+[20171028 02:24:40.771] Features mask has been set to 0
+[20171028 02:24:44.887] ZIP: Can't locate [css/style.css] in zip, error -100.
+[20171028 02:25:11.678] OpenSSL: Loaded X509 trusted CA from "/etc/ssl/certs/ca-certificates.crt"
+[20171028 02:25:54.710] Received shutdown request via signal 15
+[20171028 02:25:57.736] saved history: 0 events
+[20171028 02:25:58.845] SyncFolderScanner: shut down
+[20171028 02:25:59.433] unregister diskio completion queue with id 2
+[20171028 02:25:59.433] message thread stop
+[20171028 02:26:01.042] unregister diskio completion queue with id 1
+[20171028 02:26:01.043] Torrent session shutdown: done waiting
+[20171028 02:26:01.544] Network stop status: 1
+[20171028 02:26:02.614] diskio_controller destroyed
+[20171028 02:26:02.614] Shutdown. Saving config sync.dat

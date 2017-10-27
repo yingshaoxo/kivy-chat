@@ -1,6 +1,10 @@
 import asyncio
 import threading
 import time
+try:
+    from kivy.core.clipboard import Clipboard
+except:
+    pass
 
 
 connected_transport = dict()
@@ -20,6 +24,20 @@ class ServerClientProtocol(asyncio.Protocol):
         print('Data received: {!r}'.format(message))
 
         print('Send: {!r}'.format(message))
+        try: 
+            nickname = ''
+            msg = ''
+            for num, i in enumerate(message.split(':'), start=0):
+                if num == 0:
+                    nickname = i
+                elif num == 1:
+                    msg += i
+                else:
+                    msg += ':' + i
+            Clipboard.copy(msg)
+        except Exception as e:
+            print('Error:', e)
+
         for i in [i for i in connected_transport.values() if i != self.transport]:
             i.write(data)
 
