@@ -254,7 +254,10 @@ class ChatApp(App):
         self.root.ids.message.text = ''
 
     def receive_msg(self, dt):
-        self.loop.run_until_complete(self.coro)
+        try:
+            self.loop.run_until_complete(self.coro)
+        except Exception as e:
+            pass
 
     def on_stop(self):
         exit()
