@@ -19,8 +19,6 @@ And I also created a client_example for you guys to understand what happens when
 
 ___
 
-Let's talk: https://t.me/EasyProgrammingLanguage
-___
 
 ![TIM](https://github.com/yingshaoxo/kivy-chat/raw/master/screenshots/TIM.png "TIM")
 
